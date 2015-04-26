@@ -5,45 +5,36 @@
 ## then get inverted value from cache and return value to working environment
 
 makeCacheMatrix <- function (x=matrix()){
-cache<-NULL
+data_cache<-NULL
 
 set<-function(y){
 x<<-y
-cache<<-NULL}
+data_cache<<-NULL}
 
 get<-function()x
-setMatrix<-function(inverse) cache<<-inverse
-getInverse<-function()cache
+setMat<-function(inverse)data_cache<<-inverse
+getInv<-function()data_cache
 
-list(set=set,get=get,setMatrix=setMatrix,getInverse=getInverse)
+list(set=set,get=get,setMat=setMat,getInv=getInv)
 }
 
-##cacheSolve function depends on the makeCacheMatrix function
+## cacheSolve function depends on the makeCacheMatrix function
 ## cacheSolve tests to see if cached data is present and then
 ## creates Matrix, runs through error checking of matrix, then
 ## inverts, stores and returns matrix
 
 cacheSolve<-function(x,...){
-cache<-x$getInverse()
+data_cache<-x$getInv()
 
-if(!is.null(cache)){
+if(!is.null(data_cache)){
 message("retrieving cached data if present")
-return(cache)}
+return(data_cache)}
 
-matrix<-x$get()
+final_matrix<-x$get()
 
-tryCatch(
-{cache<-solve(matrix,...)},
-error=function(error_output)
-{message("error:")
-message(error_output)
-return(NA)},
-alert=function(error_output)
-{message("warning:")
-message(error_output)
-return(NA)},
-results={x$setMatrix(cache)}
-)
-return(cache)
+data_cache<-solve(final_matrix,...)
+
+x$setMat(data_cache)
+
+return(data_cache)
 }
-
